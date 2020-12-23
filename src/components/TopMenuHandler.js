@@ -20,9 +20,9 @@ const parseFile = () => {
     store.dispatch({ type: APP_DATA_ACTION.PARSE_FILE })
 }
 
-const handleDownloadFile = (data, fileName) => {
-    fileName = fileName ? fileName : 'gtran07.l5k'
-    const blob = new Blob([data], { type: "text/plain;charset=utf-8" })
+const handleDownloadFile = (appFile, fileName) => {
+    fileName = fileName ? fileName : appFile.outputFileName
+    const blob = new Blob([appFile.outputFile], { type: "text/plain;charset=utf-8" })
     saveAs(blob, fileName)
 }
 

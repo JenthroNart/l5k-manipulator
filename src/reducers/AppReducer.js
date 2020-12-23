@@ -4,10 +4,12 @@ import { appUIActionHandler } from './AppReducerUIActions';
 
 const initState = {
     appData: null,
+    appFile: {},
     appUI: {
         mode: 'dark',
+        activeCollectionKey: 'ROUTINE',
+        dataUI: null,
     }
-
 }
 
 const AppReducer = (state = initState, action) => {

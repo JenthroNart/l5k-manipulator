@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import Divider from '@material-ui/core/Divider';
-import GetAppIcon from '@material-ui/icons/GetApp';
+import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import get from 'lodash/get';
 import ImportContactsIcon from '@material-ui/icons/ImportContacts';
-import keys from 'lodash/keys';
 import * as TopMenuHandler from './TopMenuHandler';
 import Tooltip from '@material-ui/core/Tooltip';
 import AlertDialog from './AlertDialog';
+
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -21,25 +21,19 @@ const useStyles = makeStyles(theme => ({
   input: {
     display: 'none',
   },
-  newCollectionForm: {
-    display: 'flex',
-    padding: theme.spacing(2)
-  }
 }));
 
 const TopQuickAccessMenu = props => {
   const classes = useStyles();
   const [alertDialogAction, setAlertDialogAction] = useState(false)
 
-  const handleOpenDialog = useCallback((action) => {
-    if (keys(props.appData).length > 0) setAlertDialogAction(action)
-    else projectActions(action)
-  }, [props.appData])
-
+  //automatic trigger to parse the read file
   useEffect(() => {
-    props.fileParseReq && handleOpenDialog('parseFile')
-  }, [props.fileParseReq, handleOpenDialog])
+    projectActions('parseFile')
+  }, [props.fileParseReq])
 
+
+  //Handling action of user operated on app dialog
   const handleDialogClose = () => {
     setAlertDialogAction(null)
   }
@@ -55,6 +49,7 @@ const TopQuickAccessMenu = props => {
     handleDialogClose()
   }
 
+  //project action services
   const projectActions = action => {
     switch (action) {
       case 'parseFile':
@@ -64,6 +59,8 @@ const TopQuickAccessMenu = props => {
     }
   }
 
+
+  //UI portion of the component
   return (
     <div className={classes.container}>
       <input accept=".l5k" className={classes.input} id="icon-button-file" type="file" onChange={e => TopMenuHandler.handleOpenFile(e)} />
@@ -76,8 +73,8 @@ const TopQuickAccessMenu = props => {
       </label>
       <Tooltip title='Download L5K'>
         <span>
-          <IconButton className={classes.button} disabled={keys(props.appData).length === 0} onClick={() => TopMenuHandler.handleDownloadFile(props.appData, props.fileName)}  >
-            <GetAppIcon />
+          <IconButton className={classes.button} disabled={!get(props, 'appFile.outputFile')} onClick={() => TopMenuHandler.handleDownloadFile(props.appFile)}  >
+            <SaveAltIcon />
           </IconButton>
         </span>
       </Tooltip>
@@ -93,10 +90,9 @@ const TopQuickAccessMenu = props => {
 
 const mapStateToProps = (state) => {
   return {
-    activeCollectionKey: get(state, 'appUI.activeCollectionKey'),
-    activeItemKey: get(state, 'appUI.activeItemKey'),
     appData: get(state, 'appData'),
-    fileName: get(state, 'appFile.fileName'),
+    appFile: get(state, 'appFile'),
+    outputFile: get(state, 'appFile.outputFile'),
     fileParseReq: get(state, 'appFile.fileParseReq')
   };
 };

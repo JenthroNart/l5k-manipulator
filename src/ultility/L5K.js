@@ -1,3 +1,6 @@
+import map from 'lodash/map';
+import get from 'lodash/get';
+
 const L5K = {
     Component: {
         Controller: "CONTROLLER",
@@ -19,15 +22,29 @@ const L5K = {
     }
 }
 
-const getL5K_Component = (input, component) => {
+const getL5K_Components = (input, component) => {
     //extracting components
     const constraints = "\\b".concat(component, "\\b[^]*?\\bEND_", component, "\\b");
     const regex = new RegExp(constraints, "g");
     try {
-        return [...input.matchAll(regex)]
+        const result = [...input.matchAll(regex)]
+        return map(result, item => {
+            const handle = getComponentName(component, item[0])
+            return {
+                verbose_name: handle,
+                type: component,
+                content: get(item, "[0]")
+            }
+        })
     } catch (error) {
         console.log(error)
     }
 }
 
-export { L5K, getL5K_Component }
+const getComponentName = (component, content) => {
+    const constraints = "(?<=\\b".concat(component, "[\\b\\w\\s]+).+\\b");
+    const regex = new RegExp(constraints, "g");
+    return get(content.match(regex), '[0]')
+}
+
+export { L5K, getL5K_Components }
