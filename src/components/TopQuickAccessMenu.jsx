@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
@@ -27,12 +27,6 @@ const TopQuickAccessMenu = props => {
   const classes = useStyles();
   const [alertDialogAction, setAlertDialogAction] = useState(false)
 
-  //automatic trigger to parse the read file
-  useEffect(() => {
-    projectActions('parseFile')
-  }, [props.fileParseReq])
-
-
   //Handling action of user operated on app dialog
   const handleDialogClose = () => {
     setAlertDialogAction(null)
@@ -40,23 +34,11 @@ const TopQuickAccessMenu = props => {
 
   const handleDialogYes = () => {
     TopMenuHandler.handleDownloadFile(props.appData, props.fileName)
-    projectActions(alertDialogAction)
     handleDialogClose()
   }
 
   const handleDialogNo = () => {
-    projectActions(alertDialogAction)
     handleDialogClose()
-  }
-
-  //project action services
-  const projectActions = action => {
-    switch (action) {
-      case 'parseFile':
-        TopMenuHandler.parseFile()
-        break;
-      default:
-    }
   }
 
 

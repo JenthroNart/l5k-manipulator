@@ -48,10 +48,11 @@ const useStyles = makeStyles(theme => ({
 
 const ReactTable = memo(props => {
     const classes = useStyles();
+
     return (
         <Paper className={classes.root}>
             <MaterialTable
-                title="Available Components"
+                title={props.Title}
                 columns={[
                     { title: 'Name', field: 'verbose_name' },
                     { title: 'Type', field: 'type' },
@@ -61,8 +62,8 @@ const ReactTable = memo(props => {
                 options={{
                     selection: true,
                     filtering: true,
-                    pageSize: 25,
-                    pageSizeOptions: [10,25,50],
+                    pageSize: 5,
+                    pageSizeOptions: [5, 10, 25, 50],
                 }}
                 detailPanel={[
                     {

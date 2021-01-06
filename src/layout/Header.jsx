@@ -28,7 +28,7 @@ const Header = props => {
     <div className={classes.root}>
       <div className={classes.line}>
         <Typography variant='h6'>
-          L5K Manipulator
+          L5K Content Manipulator 1.01
         </Typography>
         <div className={classes.grow} />
         <Switch name="Dark Mode" color="default" onChange={props.toggleUIMode} />
@@ -37,7 +37,7 @@ const Header = props => {
         <TopQuickAccessMenu />
         <div className={classes.grow} />
         <Typography variant='h6'>
-          Brock Solutions
+            Personalized Solutions
         </Typography>
       </div>
     </div>

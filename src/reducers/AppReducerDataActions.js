@@ -5,7 +5,8 @@ import has from 'lodash/has';
 import forEach from 'lodash/forEach';
 import findIndex from 'lodash/findIndex';
 import replace from 'lodash/replace';
-import { fileDataWrangling } from './fileDataWrangling';
+import { L5K_Component, parseL5K } from '../ultility/L5K';
+import keys from 'lodash/keys';
 
 const APP_DATA_ACTION = {
     READ_FILE: 'readFile',
@@ -22,21 +23,25 @@ const appDataActionHandler = (state, action) => {
                     inputfileName: { $set: action.fileName },
                     inputFile: { $set: action.result },
                     outputFileName: { $set: 'Gtran07-'.concat(action.fileName) },
-                    outputFile: { $set: null },
+                    outputFile: { $set: action.result },
                     fileParseReq: { $set: get(state, 'appFile.fileParseReq') + 1 }
                 }
             })
             return state
-
         case APP_DATA_ACTION.PARSE_FILE:
             const file = get(state, 'appFile.inputFile')
-            const { data, result, message } = fileDataWrangling(file)
+            const { parsedData, status, message } = parseL5K(file)
             //---------UI management when new data coming in
-            if (result === 'successful') {
-                !has(state, ['appUI', 'dataUI', data.Type, "Items"]) && set(state, ['appUI', 'dataUI', data.Type, "Items"], null)
-                state = update(state, { appUI: { dataUI: { [data.Type]: { Items: { $set: data.Items } } } } })
+            if (status === 'successful') {
+                state = update(state, { appUI: { dataUI: { $set: parsedData } } })
+                //Expose selective data to user
+                const visibleData = []
+                keys(parsedData).forEach(item => {
+                    [L5K_Component.Routine, L5K_Component.Program, L5K_Component.Tag, L5K_Component.DataType, L5K_Component.AddOnInstruction, L5K_Component.Module].includes(item) && visibleData.push(item)
+                })
+                state = update(state, { appUI: { dataUI: { visibleData: { $set: visibleData } } } })
+                if (visibleData.length > 0) state = update(state, { appUI: { activeCollectionPath: { $set: visibleData[0] } } })
             }
-
             //raise warning message if passing data fail or set default app UI when new data came in
             else state = update(state, {
                 appUI: {
@@ -45,20 +50,19 @@ const appDataActionHandler = (state, action) => {
                 }
             })
             return state
-
         case APP_DATA_ACTION.DELETE_ITEMS:
-            let resultFile = get(state, 'appFile.inputFile')
+            let resultFile = get(state, 'appFile.outputFile')
             forEach(action.data, item => {
-                const items = get(state, ['appUI', 'dataUI', item.type, 'Items'])
+                const items = get(state, 'appUI.dataUI.' + state.appUI.activeCollectionPath + '.items')
                 const index = findIndex(items, { verbose_name: item.verbose_name })
+                const result = update(items, { $splice: [[index, 1]] })
                 //Handling UI data
-                state = update(state, { appUI: { dataUI: { [item.type]: { Items: { $splice: [[index, 1]] } } } } })
+                set(state, 'appUI.dataUI.' + state.appUI.activeCollectionPath + '.items', result)
                 //Handling the input file
                 resultFile = replace(resultFile, item.content, '')
             })
             state = update(state, { appFile: { outputFile: { $set: resultFile } } })
             return state
-
         default:
             return state
     }

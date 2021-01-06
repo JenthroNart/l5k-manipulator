@@ -7,9 +7,14 @@ const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
     display: "flex",
+    justifyContent: 'space-between'
   },
   grow: {
     flexGrow: 1,
+  },
+  multiLine: {
+    display: 'flex',
+    flexDirection: 'column'
   }
 }));
 
@@ -19,9 +24,11 @@ const Footer = props => {
 
   return (
     <div id={props.id} className={classes.root}>
-      <div className={classes.grow} />
-      <Typography variant="caption" color="inherit">
-        Giang Tran © 2020
+        <Typography variant="caption" color="inherit">
+          This Application Was Tested with Google Chrome Browser
+        </Typography>
+        <Typography variant="caption" color="inherit">
+          Giang Tran © {new Date().getFullYear()}
         </Typography>
     </div>
   );

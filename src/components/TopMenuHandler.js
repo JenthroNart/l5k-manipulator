@@ -10,7 +10,7 @@ const handleOpenFile = event => {
         reader.onload = e => {
             store.dispatch({ type: APP_DATA_ACTION.READ_FILE, fileName: reader.fileName, result: e.target.result })
             reader.input.value = ''
-
+            parseFile()
         }
         reader.readAsText(event.target.files[0]);
     }

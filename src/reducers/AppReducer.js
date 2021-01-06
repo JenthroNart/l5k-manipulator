@@ -7,7 +7,7 @@ const initState = {
     appFile: {},
     appUI: {
         mode: 'dark',
-        activeCollectionKey: 'ROUTINE',
+        activeCollectionPath: null,
         dataUI: null,
     }
 }

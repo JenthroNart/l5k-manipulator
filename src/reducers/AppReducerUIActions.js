@@ -1,13 +1,10 @@
 import update from 'immutability-helper';
-import has from 'lodash/has';
-import keys from 'lodash/keys';
-
-
 
 const APP_UI_ACTION = {
     TOGGLE_UI_MODE: 'toggleUIMode',
     CLOSE_APP_DIALOG: 'closeAppDialog',
     OPEN_APP_DIALOG: 'openAppDialog',
+    SELECT_COLLECTION: 'selectCollection',
 }
 
 const appUIActionHandler = (state, action) => {
@@ -25,16 +22,12 @@ const appUIActionHandler = (state, action) => {
         case APP_UI_ACTION.CLOSE_APP_DIALOG:
             state = update(state, { appUI: { appDialog: { $set: {} } } })
             return state;
+
+        case APP_UI_ACTION.SELECT_COLLECTION:
+            state = update(state, { appUI: { activeCollectionPath: { $set: action.path } } })
+            return state;
         default:
             return state
     }
 }
-
-const setDefaultAppUI = state => {
-    //Default Active Collection
-    const activeCollectionKey = keys(state.appData)[0]
-    !has(state, 'appUI.activeCollectionKey') && has(state, 'appUI.activeCollectionKey', {})
-    state = update(state, { appUI: { activeCollectionKey: { $set: activeCollectionKey }, activeItemKey: { $set: null }, dataUI: { $set: {} } } })
-    return state
-}
-export { APP_UI_ACTION, appUIActionHandler, setDefaultAppUI }
+export { APP_UI_ACTION, appUIActionHandler }
