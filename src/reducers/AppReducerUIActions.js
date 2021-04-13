@@ -7,8 +7,8 @@ const APP_UI_ACTION = {
     SELECT_COLLECTION: 'selectCollection',
 }
 
-const appUIActionHandler = (state, action) => {
 
+const appUIActionHandler = (state, action) => {
     switch (action.type) {
         //Generic App UI Control
         case APP_UI_ACTION.TOGGLE_UI_MODE:
@@ -30,4 +30,7 @@ const appUIActionHandler = (state, action) => {
             return state
     }
 }
-export { APP_UI_ACTION, appUIActionHandler }
+export {
+    APP_UI_ACTION,
+    appUIActionHandler
+}

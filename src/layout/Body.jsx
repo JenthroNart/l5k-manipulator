@@ -77,7 +77,6 @@ const Body = memo(props => {
   const handleSelectionChange = collectionPath => {
     props.selectCollection({ path: collectionPath })
   }
-
   return (
     <div id="body-root" className={classes.root}>
       <Paper id="tabs" className={classes.tabs} square >
@@ -123,12 +122,13 @@ const Body = memo(props => {
 
 const mapStateToProps = state => {
   const activeCollectionPath = get(state, 'appUI.activeCollectionPath');
+  const activeContentType = get(state, 'appUI.activeContentType')
   return {
-    dataUI: get(state, 'appUI.dataUI'),
-    visibleData: get(state, 'appUI.dataUI.visibleData'),
+    dataUI: get(state, 'appUI.dataUI.' + activeContentType),
+    visibleData: get(state, 'appUI.dataUI.' + activeContentType + '.visibleData'),
+    activeContentType,
     activeCollectionPath,
-    activeCollectionDataUI: get(state, 'appUI.dataUI.' + activeCollectionPath),
-    appFile: get(state, 'appFile'),
+    activeCollectionDataUI: get(state, 'appUI.dataUI.' + activeContentType + '.' + activeCollectionPath),
     appDiaglog: get(state, 'appUI.appDialog')
   };
 };

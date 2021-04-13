@@ -7,6 +7,7 @@ import Collapse from '@material-ui/core/Collapse';
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import map from 'lodash/map';
+import get from 'lodash/get';
 
 
 const useStyles = makeStyles(theme => ({
@@ -35,7 +36,7 @@ const NestedPrograms = props => {
       <Collapse in={open} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
           {
-            map(props.data.items, (item, index) => {
+            map(get(props, 'data.items'), (item, index) => {
               return (
                 <ListItem key={index} button className={classes.nested}
                   selected={props.activeItem === 'PROGRAM.items[' + index + ']' }
